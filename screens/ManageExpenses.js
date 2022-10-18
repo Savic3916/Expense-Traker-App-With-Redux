@@ -1,10 +1,11 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React, { useLayoutEffect } from 'react';
 
-import IconButton from '../components/UI/IconButton';
-import Colors from '../constants/Colors';
 import { useSelector, useDispatch } from 'react-redux';
 import { addExpense, deleteExpense, updateExpense } from '../store/redux/expenses';
+import { storeExpense } from '../util/http';
+import Colors from '../constants/Colors';
+import IconButton from '../components/UI/IconButton';
 import ExpenseForm from '../components/ManageExpense/ExpenseForm';
 
 export default function ManageExpenses({route, navigation}) {
@@ -48,9 +49,12 @@ export default function ManageExpenses({route, navigation}) {
 
      dispatch(updateExpense(newArray))
     }else{
-
-      let id = new Date().toString() + Math.random().toString();
-      dispatch(addExpense([{id: id, ...expenseData}, ...allExpense]));
+      // sending http request
+      storeExpense(expenseData);
+      
+      // // storing in redux
+      // let id = new Date().toString() + Math.random().toString();
+      // dispatch(addExpense([{id: id, ...expenseData}, ...allExpense]));
     }
     navigation.goBack();
   };

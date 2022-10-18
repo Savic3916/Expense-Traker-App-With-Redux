@@ -1,9 +1,9 @@
-import { Alert, StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react';
 
+import { getFormattedDate } from '../../util/dates';
 import Input from './Input';
 import Button from '../UI/Button';
-import { getFormattedDate } from '../../util/dates';
 import Colors from '../../constants/Colors';
 
 export default function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValue}) {

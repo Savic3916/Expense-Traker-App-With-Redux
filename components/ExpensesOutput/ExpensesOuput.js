@@ -4,7 +4,7 @@ import ExpensesList from './ExpensesList'
 import Colors from '../../constants/Colors'
 
 
-export default function ExpensesOuput({expenses, expensesPeriod, fallback}) {
+export default function ExpensesOuput({expenses, fallback}) {
 
   let content;
 
