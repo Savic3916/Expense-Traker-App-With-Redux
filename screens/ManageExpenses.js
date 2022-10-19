@@ -3,7 +3,7 @@ import React, { useLayoutEffect } from 'react';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { addExpense, deleteExpense, updateExpense } from '../store/redux/expenses';
-import { storeExpense } from '../util/http';
+import { storeExpense, updateExpenes, deleteExpenses } from '../util/http';
 import Colors from '../constants/Colors';
 import IconButton from '../components/UI/IconButton';
 import ExpenseForm from '../components/ManageExpense/ExpenseForm';
@@ -30,6 +30,7 @@ export default function ManageExpenses({route, navigation}) {
   const deleteExpenseHandler = (id) => {
     const toDelete = allExpense.filter((expense) => expense.id !== id)
     dispatch(deleteExpense(toDelete));
+    deleteExpenses(id);
     navigation.goBack();
   };
   
@@ -37,24 +38,25 @@ export default function ManageExpenses({route, navigation}) {
     navigation.goBack();
   };
 
-  const confirmHandler = (id, expenseData) => {
+  const confirmHandler = async(id, expenseData) => {
     if(isEditing){
 
      const particularExpense = allExpense.findIndex((expenses) => expenses.id === id);
      const getObject = allExpense[particularExpense];
      const alterObject = {...getObject, ...expenseData};
-     const updatedExpenses = [...allExpense];
-     updatedExpenses[particularExpense] = alterObject; 
-     const newArray = updatedExpenses;
+     const myUpdatedExpenses = [...allExpense];
+     myUpdatedExpenses[particularExpense] = alterObject; 
+     const newArray = myUpdatedExpenses;
 
-     dispatch(updateExpense(newArray))
+     dispatch(updateExpense(newArray));
+     updateExpenes(id, expenseData)
     }else{
       // sending http request
       storeExpense(expenseData);
       
       // // storing in redux
-      // let id = new Date().toString() + Math.random().toString();
-      // dispatch(addExpense([{id: id, ...expenseData}, ...allExpense]));
+     const id = await storeExpense(expenseData);
+      dispatch(addExpense([{id: id, ...expenseData}, ...allExpense]));
     }
     navigation.goBack();
   };
