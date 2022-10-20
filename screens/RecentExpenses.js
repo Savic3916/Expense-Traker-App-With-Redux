@@ -28,7 +28,7 @@ export default function RecentExpenses() {
         };
         expenses.push(expensesObj);
       }
-      dispatch(setExpenses(expenses))
+      dispatch(setExpenses(expenses.reverse()))
     };
     fetchExpenses();
   }, [])
