@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View } from 'react-native';
-import React, { useLayoutEffect } from 'react';
+import { StyleSheet, View } from 'react-native';
+import React, { useLayoutEffect, useState } from 'react';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { addExpense, deleteExpense, updateExpense } from '../store/redux/expenses';
@@ -7,12 +7,14 @@ import { storeExpense, updateExpenes, deleteExpenses } from '../util/http';
 import Colors from '../constants/Colors';
 import IconButton from '../components/UI/IconButton';
 import ExpenseForm from '../components/ManageExpense/ExpenseForm';
+import LoadingOverlay from '../components/UI/LoadingOverlay';
 
 export default function ManageExpenses({route, navigation}) {
 
-    // APP STATE
-    const allExpense = useSelector((state) => state.myExpenses.expenseArray);
-    const dispatch = useDispatch();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+// APP STATE
+  const allExpense = useSelector((state) => state.myExpenses.expenseArray);
+  const dispatch = useDispatch();
   
   const editedExpenseID = route.params?.expenseID;
   const isEditing = !!editedExpenseID;
@@ -28,6 +30,7 @@ export default function ManageExpenses({route, navigation}) {
   },[navigation, isEditing]);
 
   const deleteExpenseHandler = (id) => {
+    setIsSubmitting(true)
     const toDelete = allExpense.filter((expense) => expense.id !== id)
     dispatch(deleteExpense(toDelete));
     deleteExpenses(id);
@@ -39,6 +42,7 @@ export default function ManageExpenses({route, navigation}) {
   };
 
   const confirmHandler = async(id, expenseData) => {
+    setIsSubmitting(true);
     if(isEditing){
 
      const particularExpense = allExpense.findIndex((expenses) => expenses.id === id);
@@ -61,6 +65,9 @@ export default function ManageExpenses({route, navigation}) {
     navigation.goBack();
   };
 
+  if(isSubmitting){
+    return <LoadingOverlay/>;
+  }
   let editExpenseUI = 
                       <View style={styles.deleteContainer}>
                           <IconButton icon='trash' size={36} color={Colors.error500} onPress={() => deleteExpenseHandler(editedExpenseID)}/>
